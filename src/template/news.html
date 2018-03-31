@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>白开始爬虫</title>
+
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- 可选的Bootstrap主题文件（一般不使用） -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"></script>
+
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target="#bs-example-navbar-collapse-1"><span
+                            class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
+                            class="icon-bar"></span><span class="icon-bar"></span></button>
+                    <a class="navbar-brand" href="/">白开始爬虫展示台</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a href="/spider/huxiu">虎嗅热文</a>
+                        </li>
+                        <li>
+                            <a href="/spider/zhihu">知乎日报</a>
+                        </li>
+                        <li>
+                            <a href="/spider/ithome">IT之家</a>
+                        </li>
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">小工具<strong
+                                    class="caret"></strong></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="#">Action</a>
+                                </li>
+                                <li>
+                                    <a href="#">Another action</a>
+                                </li>
+                                <li>
+                                    <a href="#">Something else here</a>
+                                </li>
+                                <li class="divider">
+                                </li>
+                                <li>
+                                    <a href="#">Separated link</a>
+                                </li>
+                                <li class="divider">
+                                </li>
+                                <li>
+                                    <a href="#">One more separated link</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <form class="navbar-form navbar-left" role="search">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="searchKey"/>
+                            </div>
+                            <button type="submit" class="btn btn-default">搜索</button>
+                        </form>
+                    </ul>
+                </div>
+
+            </nav>
+        </div>
+    </div>
+{{range .news}}
+    <div class="row clearfix" style="padding: 30px 0;border-bottom: 1px solid #f0f0f0;position: relative">
+        <a href="{{.Payload.Url}}">
+            <div class="col-md-2 column">
+                <img alt="140x140" style="width: 100%;height: 100%;"
+                     src="{{.Payload.ImgSrc}}"/>
+            </div>
+        </a>
+        <div class="col-md-10 column" style="font-size: 18px;word-break: normal;word-wrap: break-word">
+            <a href="{{.Payload.Url}}"
+               style="transition: all .2s ease-out;text-decoration: none;cursor: pointer;color: #303030;background: transparent;">
+            {{.Payload.Title}}
+            </a>
+
+            <div style="font-size: 14px;margin: 15px 0;box-sizing: border-box;color: #bbb;line-height: 24px;font-style: normal;word-break: break-all">
+                <span class="time">{{.Payload.TimeGap}}</span>
+            </div>
+
+            <div style="font-size: 14px;color: #999;line-height: 24px;word-break: normal;word-wrap: break-word">{{.Payload.Desc}}</div>
+        </div>
+    </div>
+{{end}}
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <ul class="pagination">
+                <li>
+                    <a href="#">Prev</a>
+                </li>
+                <li>
+                    <a href="#">1</a>
+                </li>
+                <li>
+                    <a href="#">2</a>
+                </li>
+                <li>
+                    <a href="#">3</a>
+                </li>
+                <li>
+                    <a href="#">4</a>
+                </li>
+                <li>
+                    <a href="#">5</a>
+                </li>
+                <li>
+                    <a href="#">Next</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>
