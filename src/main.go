@@ -1,11 +1,12 @@
 package main
 
 import (
-	"GoSpiderServer/src/Modle"
+	"GoSpiderServer/src/modle"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"fmt"
 	"strconv"
+	"GoSpiderServer/src/biliFans"
 )
 
 var mapIndex map[string]int
@@ -15,10 +16,15 @@ func main() {
 	router := gin.Default()
 	router.LoadHTMLGlob("src/template/*")
 
+	router.GET("/", home)
+
 	groupSpider := router.Group("/spider/")
 	groupSpider.GET("/:type/:index", getData)
 	groupSpider.GET("/:type/", getData)
-	router.GET("/", nil)
+
+	groupBili:=router.Group("/bili/")
+	groupBili.GET("/query",biliQuery)
+	groupBili.POST("/query",biliQuery)
 
 	//groupSpiderApi := router.Group("/spider/api")
 	//groupSpiderApi.GET("/huxiu", HuxiuApi)
@@ -29,6 +35,11 @@ func main() {
 
 }
 
+func home(c *gin.Context){
+	c.Redirect(http.StatusMovedPermanently,"/spider/huxiu")
+}
+
+//根据请求参数获取数据
 func getData(c *gin.Context) {
 	pageType := c.Param("type")
 	pageIndex := c.Param("index")
@@ -66,4 +77,24 @@ func HuxiuApi(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{`error`: 0, `data`: news})
+}
+
+//查询返回页面
+func biliQuery(c *gin.Context) {
+	if c.Request.Method == "GET" {
+		c.HTML(http.StatusOK,"queryBiliFans.html",nil)
+	} else {
+		name := c.PostForm("upName")
+		if name == "" {
+			c.String(http.StatusOK,"未输入Up主姓名")
+		}
+
+		results, err := biliFans.QueryBiliFans([]string{name})
+		if err != nil {
+			c.String(http.StatusOK,"查询发生了错误。")
+		}
+
+
+		c.HTML(http.StatusOK,"queryBiliFans.html",gin.H{`Users`:results})
+	}
 }

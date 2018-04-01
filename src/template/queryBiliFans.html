@@ -2,19 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>白开始爬虫</title>
-
-    <!-- 新 Bootstrap 核心 CSS 文件 -->
-    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- 可选的Bootstrap主题文件（一般不使用） -->
-    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"></script>
-
-    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
-
-    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
-    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>老婆要用的工具</title>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -84,54 +75,53 @@
             </nav>
         </div>
     </div>
-{{range .news}}
-    <div class="row clearfix" style="padding: 30px 0;border-bottom: 1px solid #f0f0f0;position: relative">
-        <a href="{{.Payload.Url}}">
-            <div class="col-md-2 column">
-                <img alt="140x140" style="width: 100%;height: 100%;"
-                     src="{{.Payload.ImgSrc}}"/>
-            </div>
-        </a>
-        <div class="col-md-10 column" style="font-size: 18px;word-break: normal;word-wrap: break-word">
-            <a href="{{.Payload.Url}}"
-               style="transition: all .2s ease-out;text-decoration: none;cursor: pointer;color: #303030;background: transparent;">
-            {{.Payload.Title}}
-            </a>
-
-            <div style="font-size: 14px;margin: 15px 0;box-sizing: border-box;color: #bbb;line-height: 24px;font-style: normal;word-break: break-all">
-                <span class="time">{{.Payload.TimeGap}}</span>
-            </div>
-
-            <div style="font-size: 14px;color: #999;line-height: 24px;word-break: normal;word-wrap: break-word">{{.Payload.Desc}}</div>
-        </div>
-    </div>
-{{end}}
-
     <div class="row clearfix">
         <div class="col-md-12 column">
-            <ul class="pagination">
-                <li>
-                    <a href="/spider/{{.type}}/prev">Prev</a>
-                </li>
-                <li>
-                    <a href="/spider/{{.type}}/0">1</a>
-                </li>
-                <li>
-                    <a href="/spider/{{.type}}/1">2</a>
-                </li>
-                <li>
-                    <a href="/spider/{{.type}}/2">3</a>
-                </li>
-                <li>
-                    <a href="/spider/{{.type}}/3">4</a>
-                </li>
-                <li>
-                    <a href="/spider/{{.type}}/4">5</a>
-                </li>
-                <li>
-                    <a href="/spider/{{.type}}/next">Next</a>
-                </li>
-            </ul>
+            <div class="jumbotron">
+                <h1>
+                    老婆要用的工具
+                </h1>
+                <p>
+                    这是我老婆工作要用的一些鄙人开发的小工具，凑合着用，别客气！
+                </p>
+            </div>
+            <!--提交表格-->
+            <form role="form" method="Post">
+                <div class="form-group">
+                    <label>Up主姓名</label>
+                    <input type="text" class="form-control" name="upName"/>
+                </div>
+                {{/*<div class="form-group">*/}}
+                    {{/*<label>Excel文件</label>*/}}
+                    {{/*<input type="file" name="upIdsFile"/>*/}}
+                    {{/*<p class="help-block">*/}}
+                        {{/*上传指定格式的Excel文件*/}}
+                    {{/*</p>*/}}
+                {{/*</div>*/}}
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
+        </div>
+        <div class="col-md-12 column">
+            <table class="table table-hover table-striped">
+                <thead>
+                <tr>
+                    <th>Up主</th>
+                    <th>ID</th>
+                    <th>粉丝数</th>
+                    <th>签名</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{range .Users}}
+                <tr>
+                    <td>{{.Uname}}</td>
+                    <td>{{.Mid}}</td>
+                    <td>{{.Fans}}</td>
+                    <td>{{.Usign}}</td>
+                </tr>
+                {{end}}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
