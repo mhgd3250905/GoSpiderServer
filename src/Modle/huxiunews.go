@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"github.com/olivere/elastic"
 	"context"
+	"github.com/garyburd/redigo/redis"
+	"github.com/pkg/errors"
+	"fmt"
 )
 
 //虎嗅数据modle
@@ -26,7 +29,7 @@ func FromJsonObjHuxiu(o interface{}) (HuxiuNews, error) {
 	return news, err
 }
 
-func GetData() (news []Item, err error) {
+func GetDataFromES() (news []Item, err error) {
 	const index = "dating_profile_2"
 
 	//todo Try to start up elastic search
@@ -39,7 +42,6 @@ func GetData() (news []Item, err error) {
 		Index(index).
 		Type("huxiu"). // search in index "twitter"
 		Pretty(true). // pretty print request and response JSON
-		Query(elastic.Query())
 		Do(context.Background()) // execute
 
 	if err != nil {
@@ -47,7 +49,6 @@ func GetData() (news []Item, err error) {
 	}
 
 	hits := resp.Hits.Hits
-
 
 	for _, hit := range hits {
 		var item Item
@@ -69,5 +70,50 @@ func GetData() (news []Item, err error) {
 	}
 
 	//fmt.Printf("news: %s",news)
-	return news,nil
+	return news, nil
+}
+
+func GetDataFromRedis(offset int, limite int) (news []Item, err error) {
+	const index = "dating_profile_2"
+
+	//创建一个Redis实例
+	conn, err := redis.Dial("tcp", "localhost:6379")
+	if err != nil {
+		return nil, err
+	}
+
+	defer conn.Close()
+
+	//输入账号密码
+	//_, err = conn.Do("AUTH", "sk3250905")
+	//if err != nil {
+	//	return nil, errors.Errorf("Redis AUTH fail %v", err)
+	//}
+	//测试连接
+	if result, err := conn.Do("ping"); result != "PONG" {
+		return nil, errors.Errorf("Redis ping fail %v", err)
+
+	}
+
+	result, err := conn.Do("ZREVRANGE", "huxiu", offset, offset+limite-1)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	for i := 0; i < len(result.([]interface{})); i++ {
+		itemStr := fmt.Sprintf("%s", result.([]interface{})[i])
+		var item Item
+		json.Unmarshal([]byte(itemStr), &item)
+		if item.Id=="" {
+			continue
+		}
+		itemNew, err := FromJsonObjHuxiu(item.Payload)
+		if err != nil {
+			continue
+		}
+		item.Payload = itemNew
+		news = append(news, item)
+	}
+	return news, nil
 }
