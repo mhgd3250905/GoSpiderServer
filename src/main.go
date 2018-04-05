@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strconv"
 	"GoSpiderServer/src/biliFans"
+	"GoSpiderServer/src/chat"
 )
 
 var mapIndex map[string]int
@@ -14,7 +15,7 @@ var mapIndex map[string]int
 func main() {
 	//modle.GetDataFromES()
 	router := gin.Default()
-	router.LoadHTMLGlob("src/template/*")
+	router.LoadHTMLGlob("./src/template/*")
 
 	router.GET("/", home)
 
@@ -25,6 +26,8 @@ func main() {
 	groupBili := router.Group("/bili/")
 	groupBili.GET("/query", biliQuery)
 	groupBili.POST("/query", biliQuery)
+
+	router.GET("/echo", chat.Echo)
 
 	//groupSpiderApi := router.Group("/spider/api")
 	//groupSpiderApi.GET("/huxiu", HuxiuApi)

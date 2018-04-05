@@ -1,4 +1,4 @@
-package main
+package chat
 
 import (
 	"fmt"
@@ -96,14 +96,8 @@ var upgrade = websocket.Upgrader{
 
 var cm = ClientManager{make(map[string]WebClient), make(chan []byte)}
 
-func main() {
-	router := gin.Default()
-	router.LoadHTMLGlob("./src/templates/*")
-	router.GET("/echo", echo)
-	router.Run()
-}
 
-func echo(c *gin.Context) {
+func Echo(c *gin.Context) {
 	//获取连接
 	conn, err := upgrade.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
