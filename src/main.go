@@ -22,21 +22,21 @@ func main() {
 	groupSpider.GET("/:type/:index", getData)
 	groupSpider.GET("/:type/", getData)
 
-	groupBili:=router.Group("/bili/")
-	groupBili.GET("/query",biliQuery)
-	groupBili.POST("/query",biliQuery)
+	groupBili := router.Group("/bili/")
+	groupBili.GET("/query", biliQuery)
+	groupBili.POST("/query", biliQuery)
 
 	//groupSpiderApi := router.Group("/spider/api")
 	//groupSpiderApi.GET("/huxiu", HuxiuApi)
 
 	mapIndex = make(map[string]int)
 
-	router.Run()
+	router.Run(":8080")
 
 }
 
-func home(c *gin.Context){
-	c.Redirect(http.StatusMovedPermanently,"/spider/huxiu")
+func home(c *gin.Context) {
+	c.Redirect(http.StatusMovedPermanently, "/spider/huxiu")
 }
 
 //根据请求参数获取数据
@@ -44,30 +44,28 @@ func getData(c *gin.Context) {
 	pageType := c.Param("type")
 	pageIndex := c.Param("index")
 
-	if pageType == "huxiu" {
-		index, err := strconv.Atoi(pageIndex)
-		if err != nil {
-			if pageIndex == "prev" {
-				if mapIndex[pageType] > 0 {
-					index = mapIndex[pageType]-1
-				} else {
-					index = 0
-				}
-			} else if pageIndex == "next" {
-				index = mapIndex[pageType]+1
+	index, err := strconv.Atoi(pageIndex)
+	if err != nil {
+		if pageIndex == "prev" {
+			if mapIndex[pageType] > 0 {
+				index = mapIndex[pageType] - 1
 			} else {
 				index = 0
 			}
+		} else if pageIndex == "next" {
+			index = mapIndex[pageType] + 1
+		} else {
+			index = 0
 		}
-		mapIndex[c.Param("type")]=index
-
-		news, err := modle.GetDataFromRedis((index)*20, 20)
-		fmt.Println("news size->", len(news))
-		if err != nil {
-			c.JSON(http.StatusOK, gin.H{`error`: 1, `data`: ``})
-		}
-		c.HTML(http.StatusOK, "news.html", gin.H{"news": news, "type": pageType})
 	}
+	mapIndex[c.Param("type")] = index
+
+	news, err := modle.GetDataFromRedis(pageType, (index)*20, 20)
+	fmt.Println("news size->", len(news))
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{`error`: 1, `data`: ``})
+	}
+	c.HTML(http.StatusOK, "news.html", gin.H{"news": news, "type": pageType})
 }
 
 func HuxiuApi(c *gin.Context) {
@@ -82,19 +80,18 @@ func HuxiuApi(c *gin.Context) {
 //查询返回页面
 func biliQuery(c *gin.Context) {
 	if c.Request.Method == "GET" {
-		c.HTML(http.StatusOK,"queryBiliFans.html",nil)
+		c.HTML(http.StatusOK, "queryBiliFans.html", nil)
 	} else {
 		name := c.PostForm("upName")
 		if name == "" {
-			c.String(http.StatusOK,"未输入Up主姓名")
+			c.String(http.StatusOK, "未输入Up主姓名")
 		}
 
 		results, err := biliFans.QueryBiliFans([]string{name})
 		if err != nil {
-			c.String(http.StatusOK,"查询发生了错误。")
+			c.String(http.StatusOK, "查询发生了错误。")
 		}
 
-
-		c.HTML(http.StatusOK,"queryBiliFans.html",gin.H{`Users`:results})
+		c.HTML(http.StatusOK, "queryBiliFans.html", gin.H{`Users`: results})
 	}
 }

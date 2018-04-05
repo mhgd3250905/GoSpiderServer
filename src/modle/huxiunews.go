@@ -73,7 +73,7 @@ func GetDataFromES() (news []Item, err error) {
 	return news, nil
 }
 
-func GetDataFromRedis(offset int, limite int) (news []Item, err error) {
+func GetDataFromRedis(key string,offset int, limite int) (news []Item, err error) {
 	const index = "dating_profile_2"
 
 	//创建一个Redis实例
@@ -95,7 +95,7 @@ func GetDataFromRedis(offset int, limite int) (news []Item, err error) {
 
 	}
 
-	result, err := conn.Do("ZREVRANGE", "huxiu", offset, offset+limite-1)
+	result, err := conn.Do("ZREVRANGE", key, offset, offset+limite-1)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
