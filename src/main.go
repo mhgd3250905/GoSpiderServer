@@ -19,14 +19,17 @@ func main() {
 
 	router.GET("/", home)
 
+	//新闻爬虫
 	groupSpider := router.Group("/spider/")
 	groupSpider.GET("/:type/:index", getData)
 	groupSpider.GET("/:type/", getData)
 
+	//bili爬虫工具
 	groupBili := router.Group("/bili/")
 	groupBili.GET("/query", biliQuery)
 	groupBili.POST("/query", biliQuery)
 
+	//聊天室
 	router.GET("/echo", chat.Echo)
 
 	//groupSpiderApi := router.Group("/spider/api")
@@ -34,7 +37,7 @@ func main() {
 
 	mapIndex = make(map[string]int)
 
-	router.Run(":8080")
+	router.Run(":80")
 
 }
 
