@@ -37,11 +37,12 @@ func main() {
 
 	mapIndex = make(map[string]int)
 
-	router.Run(":80")
+	router.Run(":8080")
 
 }
 
 func home(c *gin.Context) {
+
 	c.Redirect(http.StatusMovedPermanently, "/spider/huxiu")
 }
 
