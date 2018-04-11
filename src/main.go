@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"GoSpiderServer/src/biliFans"
 	"GoSpiderServer/src/chat"
+	"GoSpiderServer/src/meizi"
 )
 
 var mapIndex map[string]int
@@ -31,6 +32,11 @@ func main() {
 
 	//聊天室
 	router.GET("/echo", chat.Echo)
+
+	//下载工具
+	fileDownload := router.Group("/file/")
+
+	fileDownload.GET("/:filename", meizi.GetMeizi)
 
 	//groupSpiderApi := router.Group("/spider/api")
 	//groupSpiderApi.GET("/huxiu", HuxiuApi)
@@ -84,6 +90,8 @@ func HuxiuApi(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{`error`: 0, `data`: news})
 }
 
+
+
 //查询返回页面
 func biliQuery(c *gin.Context) {
 	if c.Request.Method == "GET" {
@@ -102,3 +110,5 @@ func biliQuery(c *gin.Context) {
 		c.HTML(http.StatusOK, "queryBiliFans.html", gin.H{`Users`: results})
 	}
 }
+
+
