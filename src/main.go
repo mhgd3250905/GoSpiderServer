@@ -16,7 +16,7 @@ var mapIndex map[string]int
 func main() {
 	//modle.GetDataFromES()
 	router := gin.Default()
-	router.LoadHTMLGlob(".src/template/*")
+	router.LoadHTMLGlob("./src/template/*")
 
 	router.GET("/", home)
 
