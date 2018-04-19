@@ -22,8 +22,17 @@ func main() {
 
 	//新闻爬虫
 	groupSpider := router.Group("/spider/")
-	groupSpider.GET("/:type/:index", getData)
-	groupSpider.GET("/:type/", getData)
+	{
+		groupSpider.GET("/:type/:index", getData)
+		groupSpider.GET("/:type/", getData)
+	}
+
+	//新闻爬虫Api
+	groupApiSpider := router.Group("/api/v1/spider/")
+	{
+		groupApiSpider.GET("/:type/:index",getApiData)
+		groupApiSpider.GET("/:type/",getApiData)
+	}
 
 	//bili爬虫工具
 	groupBili := router.Group("/bili/")
@@ -81,16 +90,33 @@ func getData(c *gin.Context) {
 	c.HTML(http.StatusOK, "news.html", gin.H{"news": news, "type": pageType})
 }
 
-func HuxiuApi(c *gin.Context) {
-	news, err := modle.GetDataFromES()
+//根据请求参数获取数据
+func getApiData(c *gin.Context) {
+	pageType := c.Param("type")
+	pageIndex := c.Param("index")
+
+	index, err := strconv.Atoi(pageIndex)
+	if err != nil {
+		if pageIndex == "prev" {
+			if mapIndex[pageType] > 0 {
+				index = mapIndex[pageType] - 1
+			} else {
+				index = 0
+			}
+		} else if pageIndex == "next" {
+			index = mapIndex[pageType] + 1
+		} else {
+			index = 0
+		}
+	}
+	mapIndex[c.Param("type")] = index
+
+	news, err := modle.GetDataFromRedis(pageType, (index)*20, 20)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{`error`: 1, `data`: ``})
 	}
-
-	c.JSON(http.StatusOK, gin.H{`error`: 0, `data`: news})
+	c.JSON(http.StatusOK, gin.H{"error": 0, "news": news})
 }
-
-
 
 //查询返回页面
 func biliQuery(c *gin.Context) {
@@ -110,5 +136,3 @@ func biliQuery(c *gin.Context) {
 		c.HTML(http.StatusOK, "queryBiliFans.html", gin.H{`Users`: results})
 	}
 }
-
-
